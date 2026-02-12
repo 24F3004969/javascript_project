@@ -1,18 +1,298 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>
-        My Love ❤️❤️
-    </title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="love.js" defer></script>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <title>My Love Moshu ❤️❤️❤️</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+            crossorigin="anonymous"></script>
+    <style>
+        canvas {
+            position: fixed;
+            inset: 0;
+            display: block;
+        }
+
+        @font-face {
+            font-family: system-ui-override;
+            src: local("Inter"), local("Segoe UI"), local("-apple-system");
+        }
+
+        body {
+            min-height: 100dvh;
+            margin: 0;
+            overflow: hidden;
+            background: transparent;
+            display: grid;
+            place-items: center;
+        }
+
+        #bg {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .login-box {
+            position: relative;
+            z-index: 1;
+            background: #fafafa;
+            width: min(92vw, 500px);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .2), 0 6px 20px rgba(0, 0, 0, .19);
+        }
+
+        .logo-container {
+            min-height: 150px;           /* Ensure there's space to move; adjust as you like */
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            overflow: hidden;
+        }
+
+        #bg {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        #no.movable {
+            position: absolute;
+            margin: 0 !important;
+            z-index: 2;
+            transition: left 160ms ease, top 160ms ease;
+        }
+    </style>
 </head>
 <body>
-<h1>Hello world</h1>
+<canvas id="bg"></canvas>
+<div class="login-box" id="login-box">
+    <div class="logo-container">
+        <h1>Happy Valentine's Day</h1>
+    </div>
+    <h2 style="text-align: center">Will you be my Valentine</h2>
+    <div class="logo-container">
+        <button type="submit" class="btn btn-primary m-2" style="margin-top: 15px" id="no">No</button>
+        <button type="submit" class="btn btn-danger m-2" style="margin-top: 15px" id="yes">Yes</button>
+    </div>
+</div>
+<script>
+    const canvas = document.getElementById("bg");
+    const ctx = canvas.getContext("2d");
+    const box = document.getElementById('login-box');
+    const noBtn = document.getElementById('no');
+
+    function ensureMovable() {
+        if (!noBtn.classList.contains('movable')) {
+            const boxRect = box.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            noBtn.classList.add('movable');
+            noBtn.style.left = (btnRect.left - boxRect.left) + 'px';
+            noBtn.style.top = (btnRect.top - boxRect.top) + 'px';
+        }
+    }
+
+    function moveRandom() {
+        const boxRect = box.getBoundingClientRect();
+        const btnRect = noBtn.getBoundingClientRect();
+        const btnW = btnRect.width, btnH = btnRect.height;
+
+        const maxLeft = boxRect.width - btnW;
+        const maxTop = boxRect.height - btnH;
+
+        const left = Math.random() * maxLeft;
+        const top = Math.random() * maxTop;
+
+        noBtn.style.left = left + 'px';
+        noBtn.style.top = top + 'px';
+    }
+
+    noBtn.addEventListener('click', () => {
+        ensureMovable();
+        moveRandom();
+    }, {passive: true});
+    // HiDPI / retina
+    let DPR = 1;
+
+    function resize() {
+        DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1)); // cap to 2 for perf
+        canvas.width = Math.floor(window.innerWidth * DPR);
+        canvas.height = Math.floor(window.innerHeight * DPR);
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+
+    window.addEventListener("resize", resize, {passive: true});
+    resize();
+
+    // ---------- Heart drawing ----------
+    function drawHeart(ctx, cx, cy, size, scale = 1, options = {}) {
+        const {stroke = null, alpha = 1, glow = 0} = options;
+
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.translate(cx, cy);
+        const s = (size / 32) * scale; // normalized heart scale
+        ctx.scale(s, -s); // flip Y so heart is upright
+
+        if (glow > 0) {
+            ctx.shadowColor = "rgba(255, 110, 150, 0.9)";
+            ctx.shadowBlur = glow;
+        } else {
+            ctx.shadowBlur = 0;
+        }
+
+        // Smooth fill gradient
+        const grad = ctx.createLinearGradient(0, 18, 0, -18);
+        grad.addColorStop(0.00, "#ff5d84");
+        grad.addColorStop(0.55, "#ff7aa1");
+        grad.addColorStop(1.00, "#ffc0cb");
+
+        ctx.beginPath();
+        const step = options.step || 0.05; // coarse for perf in background
+        for (let t = 0; t <= Math.PI * 2 + 1e-3; t += step) {
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+            if (t === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        if (stroke) {
+            ctx.shadowBlur = 0;
+            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = stroke;
+            ctx.stroke();
+        }
+
+        ctx.restore();
+    }
+
+    // ---------- Background field: floating "moshu" + hearts ----------
+    const BG_ITEMS = [];
+    const MAX_HEARTS = 120;   // lots of hearts
+    const MAX_TEXTS = 60;    // many "moshu"
+    const SPEED = 0.2;        // base drift speed
+
+    function rand(a, b) {
+        return a + Math.random() * (b - a);
+    }
+
+    function createBgItem(type, w, h) {
+        const size = type === "heart" ? rand(10, 36) : rand(14, 34); // base size in px
+        const depth = rand(0.4, 1.0); // parallax-like depth (0.4 far, 1 near)
+        const angle = rand(0, Math.PI * 2);
+        const speed = (0.3 + Math.random()) * SPEED * (0.5 + depth); // depth affects speed
+        const alpha = (type === "heart" ? rand(0.18, 0.45) : rand(0.15, 0.35)) * (0.5 + depth * 0.5);
+        const rotSpeed = (type === "heart" ? rand(-0.006, 0.006) : rand(-0.01, 0.01)) * (0.5 + depth);
+
+        return {
+            type,
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size, depth, alpha,
+            angle, speed, rotSpeed,
+            wobblePhase: rand(0, Math.PI * 2),
+            wobbleAmp: rand(0.02, 0.08), // tiny scale wobble
+        };
+    }
+
+    function initBackground() {
+        BG_ITEMS.length = 0;
+        const w = canvas.width / DPR, h = canvas.height / DPR;
+        for (let i = 0; i < MAX_HEARTS; i++) BG_ITEMS.push(createBgItem("heart", w, h));
+        for (let i = 0; i < MAX_TEXTS; i++) BG_ITEMS.push(createBgItem("text", w, h));
+
+        // Shuffle draw order a bit
+        for (let i = BG_ITEMS.length - 1; i > 0; i--) {
+            const j = (Math.random() * (i + 1)) | 0;
+            [BG_ITEMS[i], BG_ITEMS[j]] = [BG_ITEMS[j], BG_ITEMS[i]];
+        }
+    }
+
+    initBackground();
+
+    window.addEventListener("resize", () => {
+        initBackground();
+    }, {passive: true});
+
+    // ---------- Animation loop (ONLY background now) ----------
+    let start = performance.now();
+
+    function frame(now) {
+        const t = (now - start) / 1000;
+        const w = canvas.width / DPR, h = canvas.height / DPR;
+
+        // Background
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = "#0b1220";
+        ctx.fillRect(0, 0, w, h);
+
+        // Floating hearts + "moshu" texts
+        for (const it of BG_ITEMS) {
+            // Drift
+            it.x += Math.cos(it.angle) * it.speed;
+            it.y += Math.sin(it.angle) * it.speed;
+            it.angle += it.rotSpeed * 0.2;
+
+            // Wrap-around
+            if (it.x < -50) it.x = w + 50;
+            if (it.x > w + 50) it.x = -50;
+            if (it.y < -50) it.y = h + 50;
+            if (it.y > h + 50) it.y = -50;
+
+            // Wobble for scale/alpha
+            const osc = Math.sin(t * (0.8 + it.depth * 0.6) + it.wobblePhase);
+            const scale = 1 + it.wobbleAmp * osc;
+            const a = Math.max(0, Math.min(1, it.alpha * (0.85 + 0.15 * osc)));
+
+            if (it.type === "heart") {
+                drawHeart(ctx, it.x, it.y, it.size * (0.8 + it.depth * 0.6), scale, {
+                    alpha: a,
+                    step: 0.08,
+                    stroke: null,
+                    glow: 0
+                });
+            } else {
+                // Render the text "moshu"
+                const fs = it.size * (0.9 + it.depth * 0.7) * scale;
+                ctx.save();
+                ctx.translate(it.x, it.y);
+                ctx.rotate(it.angle * 0.5);
+                ctx.globalAlpha = a;
+                ctx.font = `700 ${fs}px "Inter", "Segoe UI", system-ui, -apple-system, sans-serif`;
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                const tg = ctx.createLinearGradient(0, -fs, 0, fs);
+                tg.addColorStop(0, "#86e5ff");
+                tg.addColorStop(1, "#c1a7ff");
+                ctx.fillStyle = tg;
+                ctx.fillText("moshu", 0, 0);
+                ctx.restore();
+            }
+        }
+
+        // Optional: subtle vignette to focus center (kept; adjust strength or remove if you prefer)
+        const vgrad = ctx.createRadialGradient(w / 2, h / 2, Math.max(w, h) * 0.15, w / 2, h / 2, Math.max(w, h) * 0.75);
+        vgrad.addColorStop(0, "rgba(0,0,0,0)");
+        vgrad.addColorStop(1, "rgba(0,0,0,0.35)");
+        ctx.fillStyle = vgrad;
+        ctx.fillRect(0, 0, w, h);
+
+        requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame(frame);
+</script>
 </body>
-<style>
-
-
-</style>
 </html>
