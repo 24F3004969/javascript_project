@@ -1,0 +1,95 @@
+@font-face {
+    font-family: 'MyCustomFont'; /* Name your font */
+    src: url('my_font.ttf') format('truetype'); /* Path to your TTF file */
+    font-weight: normal; /* Define the weight (optional) */
+    font-style: normal; /* Define the style (optional) */
+}
+
+canvas {
+    position: fixed;
+    inset: 0;
+    display: block;
+}
+
+@font-face {
+    font-family: system-ui-override;
+    src: local("Inter"), local("Segoe UI"), local("-apple-system");
+}
+
+body {
+    min-height: 100dvh;
+    margin: 0;
+    overflow: hidden;
+    background: transparent;
+    display: grid;
+    place-items: center;
+}
+
+
+.login-box {
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.25),0 0 10px rgba(255,255,255,0.4);
+    background-image: url("./back_img.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: min(100vw, 600px);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, .19);
+}
+
+.sub-heading {
+    min-height: 30px;
+    font-size: 20px;
+    display: flex;
+    color: #4A0A0A;
+    font-family: 'MyCustomFont', serif;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+.bottom-text{
+    display: flex;
+    color: #4A0A0A;
+    font-family: 'MyCustomFont', serif;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+.overlay {
+    position: absolute;
+    inset: 0;
+    background-color: #fafafa;
+    opacity: 0.3;
+    border-radius: 9px;
+    z-index: -1
+}
+
+.logo-container {
+    min-height: 150px;
+    display: flex;
+    color: #4A0A0A;
+    font-family: 'MyCustomFont', serif;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+#bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+}
+
+#no.movable {
+    position: absolute;
+    margin: 0 !important;
+    z-index: 2;
+    transition: left 160ms ease, top 160ms ease;
+}
