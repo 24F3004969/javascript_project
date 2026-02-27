@@ -46,7 +46,7 @@ yesBtn.addEventListener('click', () => {
     document.getElementById("logo-containerButt")?.remove();
     document.getElementById("sub-heading").innerHTML = "“I know you would never say no, " +
         "because your love for me is deeper than even mine for you. So tell me… will you go on a" +
-        " date with me at Venu Arabian Dine?”<br></br><p>Your Love Halo</p>";
+        " date with me at Venu Arabian Dine?”<br></br><p>Your Valentine</p>";
     document.getElementById("sub-heading").style.cssText = "padding: 120px;font-size: 30px;";
 
 });
@@ -207,7 +207,7 @@ function frame(now) {
             tg.addColorStop(0, "#86e5ff");
             tg.addColorStop(1, "#c1a7ff");
             ctx.fillStyle = tg;
-            ctx.fillText("moshu", 0, 0);
+            ctx.fillText("Name", 0, 0);
             ctx.restore();
         }
     }
